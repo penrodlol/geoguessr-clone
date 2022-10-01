@@ -1,11 +1,15 @@
+import { Layout } from '@components/Layout';
 import '@fontsource/nunito';
 import '@fontsource/nunito/600.css';
 import '@fontsource/nunito/800.css';
-import type { AppProps } from 'next/app';
+import { trpc } from '@utils/trpc';
+import type { AppType } from 'next/app';
 import 'tailwindcss/tailwind.css';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+const MyApp: AppType = ({ Component, pageProps }) => (
+  <Layout>
+    <Component {...pageProps} />
+  </Layout>
+);
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);
