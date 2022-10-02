@@ -1,8 +1,8 @@
 import { trpc } from '../trpc';
-import { coordinatesRouter } from './coordinates';
+import { coordinateRouter } from './coordinate';
 
 export type AppRouter = typeof router;
 
 export const router = trpc.router({
-  coordinates: coordinatesRouter,
+  coordinate: coordinateRouter,
 });

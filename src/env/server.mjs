@@ -1,7 +1,9 @@
 // @ts-check
 import { z } from 'zod';
 
-const schema = z.object({});
+const schema = z.object({
+  NODE_ENV: z.enum(['development', 'production']),
+});
 
 const env = schema.safeParse(process.env);
 
