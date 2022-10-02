@@ -10,7 +10,7 @@ const Home: NextPage = () => (
     <p className="max-w-prose fluid-2xl">
       A clone of the popular game GeoGuessr.
     </p>
-    <Link href="/game/gameid" passHref>
+    <Link href="/play/sessionid" passHref>
       <Button className="mt-20 max-w-max">Play</Button>
     </Link>
   </section>
