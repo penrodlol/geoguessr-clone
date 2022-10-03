@@ -1,4 +1,4 @@
-import { GithubLogin, GoogleLogin } from '@components/Login';
+import { Login } from '@components/Login';
 import type { NextPage } from 'next';
 
 const Home: NextPage = () => (
@@ -10,8 +10,8 @@ const Home: NextPage = () => (
       A clone of the popular game GeoGuessr.
     </p>
     <div className="mt-20 flex flex-col gap-5">
-      <GoogleLogin />
-      <GithubLogin />
+      <Login provider="google" />
+      <Login provider="github" />
     </div>
   </section>
 );

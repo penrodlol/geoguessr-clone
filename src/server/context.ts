@@ -1,7 +1,7 @@
+import { authOptions } from '@pages/api/auth/[...nextauth]';
 import { inferAsyncReturnType } from '@trpc/server';
 import { CreateNextContextOptions as NextContextOpts } from '@trpc/server/adapters/next';
-import { Session } from 'next-auth';
-import { getSession } from './common/get-session';
+import { Session, unstable_getServerSession } from 'next-auth';
 import { prisma } from './db/prisma';
 
 export type ContextOpts = NextContextOpts & { session: Session | null };
@@ -11,5 +11,5 @@ export const ctx = async ({ req, res }: ContextOpts) => ({
   req,
   res,
   prisma,
-  session: await getSession({ req, res }),
+  session: await unstable_getServerSession(req, res, authOptions),
 });
