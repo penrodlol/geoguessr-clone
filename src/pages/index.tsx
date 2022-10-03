@@ -1,6 +1,5 @@
-import { Button } from '@components/Button';
+import { GithubLogin, GoogleLogin } from '@components/Login';
 import type { NextPage } from 'next';
-import Link from 'next/link';
 
 const Home: NextPage = () => (
   <section className="flex flex-col items-center gap-2">
@@ -10,9 +9,10 @@ const Home: NextPage = () => (
     <p className="max-w-prose fluid-2xl">
       A clone of the popular game GeoGuessr.
     </p>
-    <Link href="/play/sessionid" passHref>
-      <Button className="mt-20 max-w-max">Play</Button>
-    </Link>
+    <div className="mt-20 flex flex-col gap-5">
+      <GoogleLogin />
+      <GithubLogin />
+    </div>
   </section>
 );
 

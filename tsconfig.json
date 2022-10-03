@@ -19,6 +19,7 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@env/*": ["src/env/*"],
+      "@pages/*": ["src/pages/*"],
       "@server/*": ["src/server/*"],
       "@utils/*": ["src/utils/*"]
     }

@@ -1,8 +1,10 @@
 import { trpc } from '../trpc';
-import { coordinateRouter } from './coordinate';
+import { gameRouter } from './game';
+import { sessionRouter } from './session';
 
 export type AppRouter = typeof router;
 
 export const router = trpc.router({
-  coordinate: coordinateRouter,
+  game: gameRouter,
+  session: sessionRouter,
 });

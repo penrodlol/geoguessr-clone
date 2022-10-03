@@ -1,5 +1,7 @@
 import type { NextPage } from 'next';
 
-const Game: NextPage = () => <section></section>;
+const Game: NextPage = () => {
+  return <section></section>;
+};
 
 export default Game;

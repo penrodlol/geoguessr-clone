@@ -9,7 +9,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       role={role ?? 'button'}
       className={`rounded-md border-4 px-14 py-[0.9rem] font-extrabold
-                  fluid-xl hover:bg-[rgba(var(--colors-brand-2),0.05)]
+                  fluid-lg hover:bg-[rgba(var(--colors-brand-2),0.05)]
                   focus-visible:bg-[rgba(var(--colors-brand-2),0.05)]  ${className}`}
     >
       {children}

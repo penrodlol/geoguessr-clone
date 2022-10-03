@@ -1,11 +1,11 @@
-import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { HiMoon, HiSun } from 'react-icons/hi';
 
 type _Theme = 'light' | 'dark';
 
 const THEMES: Record<_Theme, ReactNode> = {
-  light: <MoonIcon className="h-8 w-8" />,
-  dark: <SunIcon className="h-8 w-8" />,
+  light: <HiMoon className="h-8 w-8" />,
+  dark: <HiSun className="h-8 w-8" />,
 };
 
 export const Theme = () => {
@@ -23,7 +23,7 @@ export const Theme = () => {
   }, [theme]);
 
   return (
-    <button className="rounded-md" onClick={toggle}>
+    <button className="translate-y-[3.5px] rounded-md" onClick={toggle}>
       {theme && THEMES[theme]}
     </button>
   );
