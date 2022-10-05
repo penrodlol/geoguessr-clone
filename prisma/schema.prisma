@@ -34,13 +34,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  GameSession   GameSession[]
 }
 
 model VerificationToken {
@@ -52,7 +53,31 @@ model VerificationToken {
 }
 
 model Coordinate {
-  id  Int   @id @default(sequence())
-  lat Float
-  lng Float
+  id        Int         @id @default(sequence())
+  lat       Float
+  lng       Float
+  GameRound GameRound[]
+
+  @@unique([lat, lng])
+}
+
+model GameSession {
+  id        Int      @id @default(sequence())
+  userId    String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameRounds GameRound[]
+}
+
+model GameRound {
+  id            Int      @id @default(sequence())
+  gameSessionId Int
+  coordinateId  Int
+  completed     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  gameSession GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  coordinate  Coordinate  @relation(fields: [coordinateId], references: [id], onDelete: Cascade)
 }
