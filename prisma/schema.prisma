@@ -64,11 +64,12 @@ model Coordinate {
 model GameSession {
   id        Int      @id @default(sequence())
   userId    String
-  completed Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  gameRounds GameRound[]
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rounds GameRound[]
+
+  @@unique([userId])
 }
 
 model GameRound {

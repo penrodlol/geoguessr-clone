@@ -1,7 +1,6 @@
 import { Button } from '@components/Button';
 import { Providers } from '@components/Providers';
 import { getServerSession } from '@server/common/server-session';
-import { trpc } from '@utils/trpc';
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -15,18 +14,7 @@ type SSRProps = { loggedIn: boolean };
 
 const Home: SSRPage = ({ loggedIn }) => {
   const router = useRouter();
-
-  const { data: activeGame } = trpc.game.getActive.useQuery(undefined, {
-    enabled: loggedIn,
-  });
-  const { mutate: createGame } = trpc.game.createGame.useMutation({
-    onSuccess: ({ id }) => router.push(`/game/${id}`),
-  });
-
-  const play = useCallback(() => {
-    if (activeGame) router.push(`/game/${activeGame.id}`);
-    else createGame();
-  }, [activeGame, createGame, router]);
+  const play = useCallback(() => router.push('/game'), [router]);
 
   return (
     <section className="flex flex-col items-center gap-2">
