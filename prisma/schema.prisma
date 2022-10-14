@@ -56,6 +56,7 @@ model Coordinate {
   id        Int         @id @default(sequence())
   lat       Float
   lng       Float
+  panoid    String
   GameRound GameRound[]
 
   @@unique([lat, lng])
@@ -76,9 +77,10 @@ model GameRound {
   id            Int      @id @default(sequence())
   gameSessionId Int
   coordinateId  Int
-  completed     Boolean  @default(false)
   createdAt     DateTime @default(now())
 
   gameSession GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
   coordinate  Coordinate  @relation(fields: [coordinateId], references: [id], onDelete: Cascade)
+
+  @@unique([coordinateId, gameSessionId])
 }
