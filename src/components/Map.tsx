@@ -27,7 +27,7 @@ const GoogleMap: FC<MapProps> = ({ coordinate }) => {
     });
     const streetView = new google.maps.StreetViewPanorama(
       streetViewRef.current,
-      { pano: coordinate.panoid, pov: { heading: 34, pitch: 10 } },
+      { pano: coordinate.pano, pov: { heading: 34, pitch: 10 } },
     );
 
     map.setStreetView(streetView);

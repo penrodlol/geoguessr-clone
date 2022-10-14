@@ -22,7 +22,7 @@ export const gameRouter = trpc.router({
         id: true,
         rounds: {
           select: {
-            coordinate: { select: { panoid: true, lat: true, lng: true } },
+            coordinate: { select: { pano: true, lat: true, lng: true } },
           },
           orderBy: { createdAt: 'desc' },
         },
@@ -39,7 +39,7 @@ export const gameRouter = trpc.router({
       return ctx.prisma.gameRound.create({
         data: { gameSessionId, coordinateId },
         select: {
-          coordinate: { select: { panoid: true, lat: true, lng: true } },
+          coordinate: { select: { pano: true, lat: true, lng: true } },
         },
       });
     }),

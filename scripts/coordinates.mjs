@@ -36,7 +36,7 @@ const KEY = 'XXX';
     data: unique(payload, (c) => c.pano_id)
       .filter((c) => c.pano_id && c.location)
       .map((c) => ({
-        panoid: c.pano_id,
+        pano: c.pano_id,
         lat: c.location.lat,
         lng: c.location.lng,
       })),

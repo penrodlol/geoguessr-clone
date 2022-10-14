@@ -56,7 +56,7 @@ model Coordinate {
   id        Int         @id @default(sequence())
   lat       Float
   lng       Float
-  panoid    String
+  pano      String
   GameRound GameRound[]
 
   @@unique([lat, lng])
