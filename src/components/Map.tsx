@@ -23,11 +23,18 @@ const GoogleMap: FC<MapProps> = ({ coordinate }) => {
 
     const map = new google.maps.Map(mapRef.current, {
       center: { lat: coordinate.lat, lng: coordinate.lng },
-      zoom: 10,
+      disableDefaultUI: true,
+      zoom: 2,
     });
     const streetView = new google.maps.StreetViewPanorama(
       streetViewRef.current,
-      { pano: coordinate.pano, pov: { heading: 34, pitch: 10 } },
+      {
+        pano: coordinate.pano,
+        pov: { heading: 34, pitch: 10 },
+        showRoadLabels: false,
+        addressControl: false,
+        fullscreenControl: false,
+      },
     );
 
     map.setStreetView(streetView);
