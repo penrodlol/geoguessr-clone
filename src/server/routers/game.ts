@@ -1,4 +1,5 @@
 import { trpc } from '@server/trpc';
+import { getDistance } from 'geolib';
 import { z } from 'zod';
 import { auth } from '../auth';
 import { getRandomCoordinate } from '../common/random-coordinate';
@@ -42,5 +43,21 @@ export const gameRouter = trpc.router({
           coordinate: { select: { pano: true, lat: true, lng: true } },
         },
       });
+    }),
+  submitGuess: procedure
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+        lat: z.number(),
+        lng: z.number(),
+        guessLat: z.number(),
+        guessLng: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input: { id, lat, lng, guessLat, guessLng } }) => {
+      const distance = getDistance(
+        { latitude: lat, longitude: lng },
+        { latitude: guessLat, longitude: guessLng },
+      );
     }),
 });

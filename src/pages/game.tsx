@@ -13,21 +13,15 @@ type SSRPage = Page<InferGetServerSidePropsType<typeof getServerSideProps>>;
 
 const GamePage: SSRPage = () => {
   const ctx = trpc.useContext();
-
   const { data: game } = trpc.game.get.useQuery();
-  const { mutate: nextRound } = trpc.game.createNextRound.useMutation({
-    onSuccess: async (payload) => {
-      if (!game || !payload) return;
-
-      const rounds = [{ coordinate: payload.coordinate }, ...game.rounds];
-      ctx.game.get.setData({ ...game, rounds });
-    },
-  });
 
   return (
     <div className="flex flex-grow">
       {game?.rounds[0]?.coordinate && (
-        <Map coordinate={game.rounds[0].coordinate} />
+        <Map
+          coordinate={game.rounds[0].coordinate}
+          onMarker={(e) => console.log(e)}
+        />
       )}
     </div>
   );
