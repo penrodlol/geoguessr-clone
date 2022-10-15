@@ -24,13 +24,13 @@ const GoogleMap: FC<MapProps> = ({ coordinate }) => {
     const map = new google.maps.Map(mapRef.current, {
       center: { lat: coordinate.lat, lng: coordinate.lng },
       disableDefaultUI: true,
-      zoom: 2,
+      zoom: 1,
     });
     const streetView = new google.maps.StreetViewPanorama(
       streetViewRef.current,
       {
         pano: coordinate.pano,
-        pov: { heading: 34, pitch: 10 },
+        pov: { heading: 34, pitch: 0 },
         showRoadLabels: false,
         addressControl: false,
         fullscreenControl: false,
@@ -41,9 +41,14 @@ const GoogleMap: FC<MapProps> = ({ coordinate }) => {
   }, [coordinate]);
 
   return (
-    <div className="fixed inset-0 flex">
-      <div className="h-full w-1/2" ref={mapRef} />
-      <div className="h-full w-1/2" ref={streetViewRef} />
+    <div className="flex-grow">
+      <div
+        className="absolute bottom-20 left-0 z-30 h-72 w-72 rounded-lg bg-1 shadow-2xl
+                   hover:h-1/3 hover:w-1/3"
+      >
+        <div ref={mapRef} className="absolute inset-1 rounded-md" />
+      </div>
+      <div ref={streetViewRef} className="h-full w-full" />
     </div>
   );
 };

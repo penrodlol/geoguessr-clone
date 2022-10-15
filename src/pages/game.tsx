@@ -1,18 +1,15 @@
-import { Button } from '@components/Button';
+import { Layout } from '@components/Layout';
 import { Map } from '@components/Map';
 import { getServerSession } from '@server/common/server-session';
 import { ctxInner } from '@server/context';
 import { router } from '@server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react/ssg';
 import { trpc } from '@utils/trpc';
-import {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import transformer from 'superjson';
+import { Page } from './_app';
 
-type SSRPage = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>>;
+type SSRPage = Page<InferGetServerSidePropsType<typeof getServerSideProps>>;
 
 const GamePage: SSRPage = () => {
   const ctx = trpc.useContext();
@@ -22,26 +19,23 @@ const GamePage: SSRPage = () => {
     onSuccess: async (payload) => {
       if (!game || !payload) return;
 
-      ctx.game.get.setData({
-        ...game,
-        rounds: [{ coordinate: payload.coordinate }, ...game.rounds],
-      });
+      const rounds = [{ coordinate: payload.coordinate }, ...game.rounds];
+      ctx.game.get.setData({ ...game, rounds });
     },
   });
 
   return (
-    <>
+    <div className="flex flex-grow">
       {game?.rounds[0]?.coordinate && (
-        <div className="fluid-xl">
-          <div className="fixed top-2 left-2 z-20 mt-10 bg-2">
-            <Button onClick={() => nextRound(game.id)}>Next Round</Button>
-          </div>
-          <Map coordinate={game.rounds[0].coordinate} />
-        </div>
+        <Map coordinate={game.rounds[0].coordinate} />
       )}
-    </>
+    </div>
   );
 };
+
+GamePage.getLayout = (page) => (
+  <Layout className="my-0 mx-0 flex h-full w-full max-w-none">{page}</Layout>
+);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerSession({ ...ctx });

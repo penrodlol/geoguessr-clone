@@ -40,6 +40,9 @@ module.exports = {
         body: {
           color: theme('textColor.1'),
           backgroundColor: theme('backgroundColor.1'),
+          fontFamily: theme('fontFamily.serif'),
+          fontWeight: theme('fontWeight.bold'),
+          letterSpacing: theme('letterSpacing.wide'),
         },
         'a, button': {
           borderRadius: theme('borderRadius.md'),

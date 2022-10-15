@@ -1,15 +1,12 @@
 import { Button } from '@components/Button';
 import { Providers } from '@components/Providers';
 import { getServerSession } from '@server/common/server-session';
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from 'next';
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
+import { Page } from './_app';
 
-type SSRPage = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>>;
+type SSRPage = Page<InferGetServerSidePropsType<typeof getServerSideProps>>;
 type SSRProps = { loggedIn: boolean };
 
 const Home: SSRPage = ({ loggedIn }) => {
