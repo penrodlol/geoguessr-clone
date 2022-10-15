@@ -1,63 +1,31 @@
+import { getRandomCoordinate } from '@server/common/random-coordinate';
 import { trpc } from '@server/trpc';
-import { getDistance } from 'geolib';
-import { z } from 'zod';
 import { auth } from '../auth';
-import { getRandomCoordinate } from '../common/random-coordinate';
 
 const procedure = trpc.procedure.use(auth);
 
 export const gameRouter = trpc.router({
   get: procedure.query(async ({ ctx }) => {
-    const coordinateId = await getRandomCoordinate(ctx);
-
-    if (!coordinateId) return null;
-
-    return ctx.prisma.gameSession.upsert({
+    const { id, rounds } = await ctx.prisma.gameSession.upsert({
       create: {
         userId: ctx.session.user.id,
-        rounds: { create: { coordinateId } },
+        rounds: {
+          // This is dangerous, need to refactor
+          create: { coordinateId: Number(await getRandomCoordinate(ctx)) },
+        },
       },
       update: {},
       where: { userId: ctx.session.user.id },
       select: {
         id: true,
         rounds: {
-          select: {
-            coordinate: { select: { pano: true, lat: true, lng: true } },
-          },
+          take: 1,
+          select: { coordinate: { select: { pano: true } } },
           orderBy: { createdAt: 'desc' },
         },
       },
     });
+
+    return { id, pano: rounds[0]?.coordinate.pano };
   }),
-  createNextRound: procedure
-    .input(z.number().int().positive())
-    .mutation(async ({ ctx, input: gameSessionId }) => {
-      const coordinateId = await getRandomCoordinate(ctx);
-
-      if (!coordinateId) return null;
-
-      return ctx.prisma.gameRound.create({
-        data: { gameSessionId, coordinateId },
-        select: {
-          coordinate: { select: { pano: true, lat: true, lng: true } },
-        },
-      });
-    }),
-  submitGuess: procedure
-    .input(
-      z.object({
-        id: z.number().int().positive(),
-        lat: z.number(),
-        lng: z.number(),
-        guessLat: z.number(),
-        guessLng: z.number(),
-      }),
-    )
-    .mutation(async ({ ctx, input: { id, lat, lng, guessLat, guessLng } }) => {
-      const distance = getDistance(
-        { latitude: lat, longitude: lng },
-        { latitude: guessLat, longitude: guessLng },
-      );
-    }),
 });

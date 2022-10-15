@@ -1,5 +1,7 @@
+import { GoogleMap, GoogleMapProps } from '@components/GoogleMap';
 import { Layout } from '@components/Layout';
-import { Map } from '@components/Map';
+import env from '@env/client.mjs';
+import { Status, Wrapper as GoogleMapWrapper } from '@googlemaps/react-wrapper';
 import { getServerSession } from '@server/common/server-session';
 import { ctxInner } from '@server/context';
 import { router } from '@server/routers/_app';
@@ -9,18 +11,28 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import transformer from 'superjson';
 import { Page } from './_app';
 
+const renderMap = (status: Status, props: GoogleMapProps) => {
+  switch (status) {
+    case Status.SUCCESS:
+      return <GoogleMap {...props} />;
+    case Status.LOADING:
+      return <div>loading...</div>;
+    case Status.FAILURE:
+      return <div>failed</div>;
+  }
+};
+
 type SSRPage = Page<InferGetServerSidePropsType<typeof getServerSideProps>>;
 
 const GamePage: SSRPage = () => {
-  const ctx = trpc.useContext();
   const { data: game } = trpc.game.get.useQuery();
 
   return (
     <div className="flex flex-grow">
-      {game?.rounds[0]?.coordinate && (
-        <Map
-          coordinate={game.rounds[0].coordinate}
-          onMarker={(e) => console.log(e)}
+      {game?.pano && (
+        <GoogleMapWrapper
+          apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+          render={(s) => renderMap(s, game)}
         />
       )}
     </div>
