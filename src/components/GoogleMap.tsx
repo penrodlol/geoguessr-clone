@@ -34,11 +34,17 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
         className="absolute bottom-10 left-10 z-20 flex h-72 w-72 flex-col gap-3
                    hover:h-[25rem] hover:w-[30rem]"
       >
-        <div ref={mapRef} className="h-full w-full rounded-lg shadow-2xl" />
+        <div
+          ref={mapRef}
+          className="h-full w-full rounded-lg border-2 border-brand-1 shadow-2xl"
+        />
         {map && latLng && <GoogleMapMarker map={map} position={latLng} />}
         <Button disabled={!map && !latLng}>Guess</Button>
       </div>
-      <div ref={streetViewRef} className="h-full w-full rounded-md shadow-xl" />
+      <div
+        ref={streetViewRef}
+        className="h-full w-full rounded-md border-2 border-brand-1 shadow-xl"
+      />
     </div>
   );
 };
