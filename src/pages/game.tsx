@@ -9,6 +9,7 @@ import { router } from '@server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react/ssg';
 import { trpc } from '@utils/trpc';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useState } from 'react';
 import transformer from 'superjson';
 import { Page } from './_app';
 
@@ -26,7 +27,12 @@ const renderMap = (status: Status, props: GoogleMapProps) => {
 type SSRPage = Page<InferGetServerSidePropsType<typeof getServerSideProps>>;
 
 const GamePage: SSRPage = () => {
+  const [answerMarker, setAnswerMarker] = useState<google.maps.LatLngLiteral>();
+
   const { data: game } = trpc.game.get.useQuery();
+  const { mutate: onGuess } = trpc.game.guess.useMutation({
+    onSuccess: (payload) => payload && setAnswerMarker(payload),
+  });
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -37,7 +43,13 @@ const GamePage: SSRPage = () => {
         {game?.pano && (
           <GoogleMapWrapper
             apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-            render={(s) => renderMap(s, game)}
+            render={(status) =>
+              renderMap(status, {
+                pano: game.pano,
+                marker: answerMarker,
+                onGuess,
+              })
+            }
           />
         )}
       </div>

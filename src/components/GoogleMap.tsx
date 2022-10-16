@@ -1,3 +1,4 @@
+import { LatLngLiteral } from '@googlemaps/google-maps-services-js';
 import { QGame } from '@utils/trpc';
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
@@ -5,14 +6,16 @@ import { GoogleMapMarker } from './GoogleMarker';
 
 export interface GoogleMapProps extends google.maps.MapOptions {
   pano: NonNullable<QGame<'get'>>['pano'];
+  marker?: LatLngLiteral;
+  onGuess: (latLng: LatLngLiteral) => void;
 }
 
-export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
+export const GoogleMap: FC<GoogleMapProps> = ({ pano, marker, onGuess }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const streetViewRef = useRef<HTMLDivElement>(null);
 
-  const [map, setMap] = useState<google.maps.Map | null>();
-  const [latLng, setLatLng] = useState<google.maps.LatLngLiteral | null>();
+  const [map, setMap] = useState<google.maps.Map>();
+  const [latLng, setLatLng] = useState<google.maps.LatLngLiteral>();
 
   useEffect(() => {
     if (!mapRef.current || !streetViewRef.current) return;
@@ -28,6 +31,13 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
     setMap(map);
   }, [pano]);
 
+  useEffect(() => {
+    if (!map || !latLng || !marker) return;
+
+    const line = createLine(map, [marker, latLng]);
+    line.setMap(map);
+  }, [map, latLng, marker]);
+
   return (
     <div className="flex-grow">
       <div
@@ -38,8 +48,17 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
           ref={mapRef}
           className="h-full w-full rounded-lg border-2 border-brand-1 shadow-2xl"
         />
-        {map && latLng && <GoogleMapMarker map={map} position={latLng} />}
-        <Button disabled={!map && !latLng}>Guess</Button>
+        {map &&
+          latLng &&
+          [marker, latLng]?.map((marker, i) => (
+            <GoogleMapMarker key={i} map={map} position={marker} />
+          ))}
+        <Button
+          disabled={(!map && !latLng) || !!marker}
+          onClick={() => latLng && onGuess(latLng)}
+        >
+          Guess
+        </Button>
       </div>
       <div
         ref={streetViewRef}
@@ -63,4 +82,14 @@ const createStreetView = (div: HTMLDivElement, pano: GoogleMapProps['pano']) =>
     showRoadLabels: false,
     addressControl: false,
     fullscreenControl: false,
+  });
+
+const createLine = (map: google.maps.Map, path: google.maps.LatLngLiteral[]) =>
+  new google.maps.Polyline({
+    path,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+    map,
   });
