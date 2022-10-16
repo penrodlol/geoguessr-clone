@@ -1,5 +1,6 @@
 import { QGame } from '@utils/trpc';
 import { FC, useEffect, useRef, useState } from 'react';
+import { Button } from './Button';
 import { GoogleMapMarker } from './GoogleMarker';
 
 export interface GoogleMapProps extends google.maps.MapOptions {
@@ -11,6 +12,7 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
   const streetViewRef = useRef<HTMLDivElement>(null);
 
   const [map, setMap] = useState<google.maps.Map | null>();
+  const [latLng, setLatLng] = useState<google.maps.LatLngLiteral | null>();
 
   useEffect(() => {
     if (!mapRef.current || !streetViewRef.current) return;
@@ -20,7 +22,7 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
 
     map.setStreetView(streetView);
     map.addListener('click', (e: google.maps.MapMouseEvent) => {
-      console.log(e.latLng?.toJSON());
+      if (e.latLng) setLatLng(e.latLng.toJSON());
     });
 
     setMap(map);
@@ -29,13 +31,17 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano }) => {
   return (
     <div className="flex-grow">
       <div
-        className="absolute bottom-20 left-0 z-30 h-72 w-72 rounded-lg bg-1 shadow-2xl
-                   hover:h-1/3 hover:w-1/3"
+        className="absolute bottom-10 left-10 z-20 flex h-72 w-72 flex-col gap-3
+                   hover:h-[25rem] hover:w-[30rem]"
       >
-        <div ref={mapRef} className="absolute inset-1 rounded-md" />
-        {map && <GoogleMapMarker map={map} />}
+        <div
+          ref={mapRef}
+          className="h-full w-full rounded-lg bg-1 shadow-2xl"
+        />
+        {map && latLng && <GoogleMapMarker map={map} position={latLng} />}
+        <Button disabled={!map && !latLng}>Guess</Button>
       </div>
-      <div ref={streetViewRef} className="h-full w-full" />
+      <div ref={streetViewRef} className="h-full w-full rounded-md shadow-xl" />
     </div>
   );
 };
