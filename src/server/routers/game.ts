@@ -1,6 +1,5 @@
 import { getRandomCoordinate } from '@server/common/random-coordinate';
 import { trpc } from '@server/trpc';
-import { getDistance } from 'geolib';
 import { z } from 'zod';
 import { auth } from '../auth';
 
@@ -40,11 +39,8 @@ export const gameRouter = trpc.router({
       const coordinate = game?.rounds?.[0]?.coordinate;
       if (!coordinate) return null;
 
-      const distance = getDistance(
-        { latitude: coordinate.lat, longitude: coordinate.lng },
-        { latitude: lat, longitude: lng },
-      );
+      const target = { lat: coordinate.lat, lng: coordinate.lng };
 
-      return { lat: coordinate.lat, lng: coordinate.lng };
+      return { marker: target };
     }),
 });

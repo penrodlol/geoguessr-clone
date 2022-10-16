@@ -1,4 +1,10 @@
 import { LatLngLiteral } from '@googlemaps/google-maps-services-js';
+import {
+  createMap,
+  createPolyline,
+  createStreetView,
+  fitBounds,
+} from '@utils/map';
 import { QGame } from '@utils/trpc';
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
@@ -18,7 +24,7 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano, marker, onGuess }) => {
   const [latLng, setLatLng] = useState<google.maps.LatLngLiteral>();
 
   useEffect(() => {
-    if (!mapRef.current || !streetViewRef.current) return;
+    if (!mapRef.current || !streetViewRef.current || !pano) return;
 
     const map = createMap(mapRef.current);
     const streetView = createStreetView(streetViewRef.current, pano);
@@ -34,15 +40,15 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano, marker, onGuess }) => {
   useEffect(() => {
     if (!map || !latLng || !marker) return;
 
-    const line = createLine(map, [marker, latLng]);
-    line.setMap(map);
+    createPolyline(map, [marker, latLng]).setMap(map);
+    fitBounds(map, [marker, latLng]);
   }, [map, latLng, marker]);
 
   return (
     <div className="flex-grow">
       <div
-        className="absolute bottom-10 left-10 z-20 flex h-72 w-72 flex-col gap-3
-                   hover:h-[25rem] hover:w-[30rem]"
+        className="absolute bottom-10 left-10 z-20 flex h-64 w-64
+                   flex-col gap-3 hover:h-[25rem] hover:w-[30rem]"
       >
         <div
           ref={mapRef}
@@ -54,7 +60,7 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano, marker, onGuess }) => {
             <GoogleMapMarker key={i} map={map} position={marker} />
           ))}
         <Button
-          disabled={(!map && !latLng) || !!marker}
+          disabled={!map && !latLng}
           onClick={() => latLng && onGuess(latLng)}
         >
           Guess
@@ -67,29 +73,3 @@ export const GoogleMap: FC<GoogleMapProps> = ({ pano, marker, onGuess }) => {
     </div>
   );
 };
-
-const createMap = (div: HTMLDivElement) =>
-  new google.maps.Map(div, {
-    center: { lat: 0, lng: 0 },
-    disableDefaultUI: true,
-    zoom: 1,
-  });
-
-const createStreetView = (div: HTMLDivElement, pano: GoogleMapProps['pano']) =>
-  new google.maps.StreetViewPanorama(div, {
-    pano,
-    pov: { heading: 34, pitch: 0 },
-    showRoadLabels: false,
-    addressControl: false,
-    fullscreenControl: false,
-  });
-
-const createLine = (map: google.maps.Map, path: google.maps.LatLngLiteral[]) =>
-  new google.maps.Polyline({
-    path,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2,
-    map,
-  });
