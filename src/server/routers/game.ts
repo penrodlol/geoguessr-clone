@@ -19,13 +19,12 @@ export const gameRouter = trpc.router({
       select: {
         id: true,
         rounds: {
-          take: 1,
           select: { coordinate: { select: { pano: true } } },
           orderBy: { createdAt: 'desc' },
         },
       },
     });
 
-    return { id, pano: rounds[0]?.coordinate.pano };
+    return { id, pano: rounds[0]?.coordinate.pano, round: rounds.length };
   }),
 });

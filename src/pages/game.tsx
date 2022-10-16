@@ -1,3 +1,4 @@
+import { GameStats } from '@components/GameStats';
 import { GoogleMap, GoogleMapProps } from '@components/GoogleMap';
 import { Layout } from '@components/Layout';
 import env from '@env/client.mjs';
@@ -28,19 +29,24 @@ const GamePage: SSRPage = () => {
   const { data: game } = trpc.game.get.useQuery();
 
   return (
-    <div className="flex flex-grow">
-      {game?.pano && (
-        <GoogleMapWrapper
-          apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-          render={(s) => renderMap(s, game)}
-        />
-      )}
+    <div className="flex w-full flex-col gap-4">
+      <div className="self-center">
+        <GameStats game={game} />
+      </div>
+      <div className="flex flex-grow">
+        {game?.pano && (
+          <GoogleMapWrapper
+            apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+            render={(s) => renderMap(s, game)}
+          />
+        )}
+      </div>
     </div>
   );
 };
 
 GamePage.getLayout = (page) => (
-  <Layout className="my-0 mx-0 flex h-full w-full max-w-none">{page}</Layout>
+  <Layout className="!mt-2 flex w-full">{page}</Layout>
 );
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
